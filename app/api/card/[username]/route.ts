@@ -267,8 +267,8 @@ function renderGamifiedCard(
       <stop offset="100%" stop-color="${theme.accent}" stop-opacity="0.02"/>
     </linearGradient>
 
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+    <filter id="glow-sm" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
       <feMerge>
         <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
