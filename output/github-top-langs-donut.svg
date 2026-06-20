@@ -1,0 +1,221 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" width="490" height="243" viewBox="0 0 490 243">
+  <defs>
+    <!-- Gradasi Tema -->
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0c081a"/>
+      <stop offset="100%" stop-color="#050308"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ce93d8"/>
+      <stop offset="100%" stop-color="#80deea"/>
+    </linearGradient>
+    <linearGradient id="shimmer" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ce93d8" stop-opacity="0.12"/>
+      <stop offset="50%" stop-color="#80deea" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#ce93d8" stop-opacity="0.02"/>
+    </linearGradient>
+
+    <filter id="blob-blur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="30"/>
+    </filter>
+
+    <clipPath id="card-clip">
+      <rect width="490" height="243" rx="20"/>
+    </clipPath>
+
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&amp;family=Outfit:wght@600;700;800;900&amp;display=swap');
+      
+      .title-text { font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 900; fill: #f48fb1; letter-spacing: 1.5px; }
+      .user-text { font-family: 'Outfit', sans-serif; font-size: 10.5px; font-weight: 600; fill: #b3afc9; opacity: 0.8; }
+      .lang-label { font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; fill: #f48fb1; }
+      .lang-pct { font-family: 'Outfit', sans-serif; font-size: 10.5px; font-weight: 700; fill: #b3afc9; }
+      .footer-text { font-family: 'Outfit', sans-serif; font-size: 9px; font-weight: 700; fill: #b3afc9; opacity: 0.4; letter-spacing: 2px; }
+    </style>
+  </defs>
+
+  <!-- ================= BASE KARTU ================= -->
+  <rect x="10" y="10" width="470" height="223" rx="20" fill="url(#bg)" 
+    stroke="url(#accent)" stroke-width="1.2" stroke-opacity="0.6"/>
+
+  <g clip-path="url(#card-clip)">
+    <circle cx="80" cy="193" r="75" fill="#80deea" opacity="0.22" filter="url(#blob-blur)"/>
+    <circle cx="410" cy="50" r="85" fill="#ce93d8" opacity="0.18" filter="url(#blob-blur)"/>
+  </g>
+
+  <rect x="10" y="10" width="470" height="223" rx="20" fill="url(#shimmer)" pointer-events="none"/>
+
+  <!-- Header -->
+  
+  <g transform="translate(28, 32)">
+    <text class="title-text" x="0" y="0">✨ DETAILED AFFINITY</text>
+    <text class="user-text" x="0" y="14">Advanced element analysis for @zzeeyyaa</text>
+  </g>
+  
+
+  
+  <g transform="translate(450 56) scale(5)" opacity="0">
+    <path d="M0,-1 L0.3,-0.3 L1,0 L0.3,0.3 L0,1 L-0.3,0.3 L-1,0 L-0.3,-0.3Z" fill="#ce93d8" opacity="0.5"/>
+    <animate attributeName="opacity" values="0;0.6;0" dur="3s" begin="0s" repeatCount="indefinite"/>
+  </g>
+  <g transform="translate(415 208) scale(4)" opacity="0">
+    <path d="M0,-1 L0.3,-0.3 L1,0 L0.3,0.3 L0,1 L-0.3,0.3 L-1,0 L-0.3,-0.3Z" fill="#80deea" opacity="0.5"/>
+    <animate attributeName="opacity" values="0;0.6;0" dur="3s" begin="0.5s" repeatCount="indefinite"/>
+  </g>
+
+  <!-- Stacked Bar Atas (Liquid Strip) -->
+  <g transform="translate(28 58)">
+    <rect width="434" height="12" rx="6" fill="#271c35" opacity="0.15"/>
+    <g clip-path="url(#card-clip)">
+      
+      <rect x="0" y="0" width="0" height="12" fill="#00B4AB" rx="6">
+        <animate attributeName="width" from="0" to="184.016" dur="0.8s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+      </rect>
+      <rect x="184.016" y="0" width="0" height="12" fill="#DA5B0B" rx="0">
+        <animate attributeName="width" from="0" to="85.49799999999999" dur="0.8s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+      </rect>
+      <rect x="269.514" y="0" width="0" height="12" fill="#f7df1e" rx="0">
+        <animate attributeName="width" from="0" to="32.55" dur="0.8s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+      </rect>
+      <rect x="302.064" y="0" width="0" height="12" fill="#3178c6" rx="0">
+        <animate attributeName="width" from="0" to="31.248000000000005" dur="0.8s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+      </rect>
+      <rect x="333.312" y="0" width="0" height="12" fill="#f34b7d" rx="0">
+        <animate attributeName="width" from="0" to="22.134" dur="0.8s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+      </rect>
+    </g>
+  </g>
+
+  <!-- ================= BOTTOM: INDIVIDUAL FLOATING LINES ================= -->
+  <g transform="translate(28 96)">
+    
+    <g transform="translate(0, 0)" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" dur="0.4s" begin="0.00s" fill="freeze"/>
+      
+      <!-- Titik Indikator Sederhana -->
+      <circle cx="4" cy="0" r="3" fill="#00B4AB" opacity="0.9" />
+      
+      <!-- Label Nama Bahasa -->
+      <text class="lang-label" x="16" y="0" dominant-baseline="central">
+        DART
+      </text>
+
+      <!-- Sleek Progress Bar (Track belakang dihapus total biar minimalis!) -->
+      <rect x="110" y="-2.5" width="0" height="5" rx="2.5" fill="#00B4AB">
+        <animate attributeName="width" from="0" to="89.03999999999999" dur="0.8s" begin="0.00s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+      </rect>
+
+      <!-- Orb Cahaya Lembut di Ujung Bar -->
+      <circle cx="110" cy="0" r="1.5" fill="#ffffff" opacity="0">
+        <animate attributeName="cx" from="110" to="199.04" dur="0.8s" begin="0.00s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+        <animate attributeName="opacity" from="0" to="0.85" dur="0.8s" begin="0.00s" fill="freeze"/>
+      </circle>
+      
+      <!-- Angka Persentase Sejajar Rapi -->
+      <text class="lang-pct" x="332" y="0" dominant-baseline="central">42.4%</text>
+    </g>
+    <g transform="translate(0, 25)" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" dur="0.4s" begin="0.08s" fill="freeze"/>
+      
+      <!-- Titik Indikator Sederhana -->
+      <circle cx="4" cy="0" r="3" fill="#DA5B0B" opacity="0.9" />
+      
+      <!-- Label Nama Bahasa -->
+      <text class="lang-label" x="16" y="0" dominant-baseline="central">
+        JUPYTER NO..
+      </text>
+
+      <!-- Sleek Progress Bar (Track belakang dihapus total biar minimalis!) -->
+      <rect x="110" y="-2.5" width="0" height="5" rx="2.5" fill="#DA5B0B">
+        <animate attributeName="width" from="0" to="41.37" dur="0.8s" begin="0.08s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+      </rect>
+
+      <!-- Orb Cahaya Lembut di Ujung Bar -->
+      <circle cx="110" cy="0" r="1.5" fill="#ffffff" opacity="0">
+        <animate attributeName="cx" from="110" to="151.37" dur="0.8s" begin="0.08s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+        <animate attributeName="opacity" from="0" to="0.85" dur="0.8s" begin="0.08s" fill="freeze"/>
+      </circle>
+      
+      <!-- Angka Persentase Sejajar Rapi -->
+      <text class="lang-pct" x="332" y="0" dominant-baseline="central">19.7%</text>
+    </g>
+    <g transform="translate(0, 50)" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" dur="0.4s" begin="0.16s" fill="freeze"/>
+      
+      <!-- Titik Indikator Sederhana -->
+      <circle cx="4" cy="0" r="3" fill="#f7df1e" opacity="0.9" />
+      
+      <!-- Label Nama Bahasa -->
+      <text class="lang-label" x="16" y="0" dominant-baseline="central">
+        JAVASCRIPT
+      </text>
+
+      <!-- Sleek Progress Bar (Track belakang dihapus total biar minimalis!) -->
+      <rect x="110" y="-2.5" width="0" height="5" rx="2.5" fill="#f7df1e">
+        <animate attributeName="width" from="0" to="15.75" dur="0.8s" begin="0.16s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+      </rect>
+
+      <!-- Orb Cahaya Lembut di Ujung Bar -->
+      <circle cx="110" cy="0" r="1.5" fill="#ffffff" opacity="0">
+        <animate attributeName="cx" from="110" to="125.75" dur="0.8s" begin="0.16s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+        <animate attributeName="opacity" from="0" to="0.85" dur="0.8s" begin="0.16s" fill="freeze"/>
+      </circle>
+      
+      <!-- Angka Persentase Sejajar Rapi -->
+      <text class="lang-pct" x="332" y="0" dominant-baseline="central">7.5%</text>
+    </g>
+    <g transform="translate(0, 75)" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" dur="0.4s" begin="0.24s" fill="freeze"/>
+      
+      <!-- Titik Indikator Sederhana -->
+      <circle cx="4" cy="0" r="3" fill="#3178c6" opacity="0.9" />
+      
+      <!-- Label Nama Bahasa -->
+      <text class="lang-label" x="16" y="0" dominant-baseline="central">
+        TYPESCRIPT
+      </text>
+
+      <!-- Sleek Progress Bar (Track belakang dihapus total biar minimalis!) -->
+      <rect x="110" y="-2.5" width="0" height="5" rx="2.5" fill="#3178c6">
+        <animate attributeName="width" from="0" to="15.120000000000001" dur="0.8s" begin="0.24s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+      </rect>
+
+      <!-- Orb Cahaya Lembut di Ujung Bar -->
+      <circle cx="110" cy="0" r="1.5" fill="#ffffff" opacity="0">
+        <animate attributeName="cx" from="110" to="125.12" dur="0.8s" begin="0.24s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+        <animate attributeName="opacity" from="0" to="0.85" dur="0.8s" begin="0.24s" fill="freeze"/>
+      </circle>
+      
+      <!-- Angka Persentase Sejajar Rapi -->
+      <text class="lang-pct" x="332" y="0" dominant-baseline="central">7.2%</text>
+    </g>
+    <g transform="translate(0, 100)" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" dur="0.4s" begin="0.32s" fill="freeze"/>
+      
+      <!-- Titik Indikator Sederhana -->
+      <circle cx="4" cy="0" r="3" fill="#f34b7d" opacity="0.9" />
+      
+      <!-- Label Nama Bahasa -->
+      <text class="lang-label" x="16" y="0" dominant-baseline="central">
+        C++
+      </text>
+
+      <!-- Sleek Progress Bar (Track belakang dihapus total biar minimalis!) -->
+      <rect x="110" y="-2.5" width="0" height="5" rx="2.5" fill="#f34b7d">
+        <animate attributeName="width" from="0" to="10.709999999999999" dur="0.8s" begin="0.32s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+      </rect>
+
+      <!-- Orb Cahaya Lembut di Ujung Bar -->
+      <circle cx="110" cy="0" r="1.5" fill="#ffffff" opacity="0">
+        <animate attributeName="cx" from="110" to="120.71" dur="0.8s" begin="0.32s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+        <animate attributeName="opacity" from="0" to="0.85" dur="0.8s" begin="0.32s" fill="freeze"/>
+      </circle>
+      
+      <!-- Angka Persentase Sejajar Rapi -->
+      <text class="lang-pct" x="332" y="0" dominant-baseline="central">5.1%</text>
+    </g>
+  </g>
+
+  <text class="footer-text" x="462" y="229" text-anchor="end">DEV FAIRY METRICS</text>
+</svg>

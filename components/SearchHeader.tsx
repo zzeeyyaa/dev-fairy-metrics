@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { Sparkles, Search, Heart, Loader2 } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Sparkles, Search, Heart, Loader2, X } from "lucide-react";
 import { jellySpring } from "./constants";
 import React from "react";
 
@@ -75,6 +75,27 @@ export function SearchHeader({
             aria-label="GitHub username"
             disabled={loading}
           />
+          <AnimatePresence>
+            {inputValue.length > 0 && (
+              <motion.button
+                type="button" // Wajib agar tidak memicu submit form
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setInputValue("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-full hover:bg-slate-500/10 transition-colors cursor-pointer"
+                aria-label="Clear input"
+                disabled={loading}
+              >
+                <X
+                  className="w-4 h-4"
+                  style={{ color: "hsl(var(--fairy-text-soft))" }}
+                />
+              </motion.button>
+            )}
+          </AnimatePresence>
         </div>
         <motion.button
           type="submit"
