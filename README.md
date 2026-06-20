@@ -171,8 +171,6 @@ Once the Action runs and creates the `output` branch, you can reference the SVGs
 └── generate.mjs          # SVG builder script
 ```
 
----
-
 ## License
 
-This project is open-source and licensed under the MIT License.
+This project is private and proprietary. All rights reserved.
