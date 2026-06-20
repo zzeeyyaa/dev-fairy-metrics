@@ -16,6 +16,7 @@ export interface GitHubData {
     totalStars: number;
     totalForks: number;
     totalLanguages: number;
+    totalCommits?: number;
   };
   languages: {
     name: string;

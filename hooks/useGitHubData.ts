@@ -60,6 +60,13 @@ export function useGitHubData() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleClear = useCallback(() => {
+    setInputValue("");
+    setData(null);
+    setError(null);
+    setUsernameParam("");
+  }, [setUsernameParam]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     fetchData(inputValue);
@@ -72,5 +79,6 @@ export function useGitHubData() {
     loading,
     error,
     handleSubmit,
+    handleClear,
   };
 }

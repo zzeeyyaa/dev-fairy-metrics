@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
 import { GitHubData } from "../components/types";
+import { calculateLevel } from "../lib/gameUtils";
 
 export function useWidgetBuilder(data: GitHubData | null) {
   const [cardType, setCardType] = useState<"stats" | "languages">("stats");
@@ -13,7 +14,17 @@ export function useWidgetBuilder(data: GitHubData | null) {
   const [widgetHideBorder, setWidgetHideBorder] = useState<boolean>(false);
   const [widgetTitle, setWidgetTitle] = useState<string>("");
   const [widgetLangsCount, setWidgetLangsCount] = useState<number>(8);
+  const [widgetRpgClass, setWidgetRpgClass] = useState<string>("");
   const [copiedFormat, setCopiedFormat] = useState<"markdown" | "html" | null>(null);
+
+  const userLevel = useMemo(() => {
+    if (!data) return 1;
+    const followers = data.user.followers || 0;
+    const totalStars = data.stats?.totalStars || 0;
+    const totalRepos = data.stats?.totalRepos || 0;
+    const totalCommits = data.stats?.totalCommits || 0;
+    return calculateLevel(totalCommits, totalStars, totalRepos, followers);
+  }, [data]);
   
   const [origin, setOrigin] = useState("");
   const [mounted, setMounted] = useState(false);
@@ -57,14 +68,17 @@ export function useWidgetBuilder(data: GitHubData | null) {
 
     if (cardType === "stats") {
       if (widgetTitle.trim()) params.set("title", widgetTitle.trim());
-      if (statsLayout === "rpg") params.set("rpg", "true");
+      if (statsLayout === "rpg") {
+        params.set("rpg", "true");
+        if (widgetRpgClass) params.set("rpg_class", widgetRpgClass);
+      }
       return params.toString();
     } else {
       params.set("layout", widgetLayout);
       params.set("langs_count", widgetLangsCount.toString());
       return params.toString();
     }
-  }, [cardType, widgetTheme, widgetLayout, widgetHideTitle, widgetHideBorder, widgetTitle, widgetLangsCount, statsLayout]);
+  }, [cardType, widgetTheme, widgetLayout, widgetHideTitle, widgetHideBorder, widgetTitle, widgetLangsCount, statsLayout, widgetRpgClass]);
 
   const previewUrl = useMemo(() => {
     if (!data) return "";
@@ -122,6 +136,8 @@ export function useWidgetBuilder(data: GitHubData | null) {
     widgetHideBorder, setWidgetHideBorder,
     widgetTitle, setWidgetTitle,
     widgetLangsCount, setWidgetLangsCount,
+    widgetRpgClass, setWidgetRpgClass,
+    userLevel,
     previewUrl,
     markdownCode,
     htmlCode,

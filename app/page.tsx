@@ -15,6 +15,7 @@ import { StatsGrid } from "../components/StatsGrid";
 import { LanguageBars } from "../components/LanguageBars";
 import { TopRepos } from "../components/TopRepos";
 import { ReadmeBuilder } from "../components/ReadmeBuilder";
+import { LevelGuide } from "../components/LevelGuide";
 
 import { useGitHubData } from "../hooks/useGitHubData";
 import { useWidgetBuilder } from "../hooks/useWidgetBuilder";
@@ -32,7 +33,7 @@ export default function Home() {
 }
 
 function DashboardContent() {
-  const { inputValue, setInputValue, data, loading, error, handleSubmit } = useGitHubData();
+  const { inputValue, setInputValue, data, loading, error, handleSubmit, handleClear } = useGitHubData();
   const [theme, setTheme] = useState("theme-dark-fairy");
   const [lastLightTheme, setLastLightTheme] = useState("theme-cotton-candy");
   const [showThemePicker, setShowThemePicker] = useState(false);
@@ -99,6 +100,7 @@ function DashboardContent() {
               setInputValue={setInputValue}
               handleSubmit={handleSubmit}
               loading={loading}
+              onClear={handleClear}
             />
 
             <ThemePicker 
@@ -220,6 +222,8 @@ function DashboardContent() {
                   </div>
 
                   <ReadmeBuilder {...builderState} />
+
+                  <LevelGuide />
 
                   <motion.footer
                     className="text-center mt-10 mb-4"

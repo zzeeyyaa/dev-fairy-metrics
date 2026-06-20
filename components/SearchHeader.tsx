@@ -8,6 +8,7 @@ interface SearchHeaderProps {
   setInputValue: (val: string) => void;
   handleSubmit: (e: React.FormEvent) => void;
   loading: boolean;
+  onClear: () => void;
 }
 
 export function SearchHeader({
@@ -15,6 +16,7 @@ export function SearchHeader({
   setInputValue,
   handleSubmit,
   loading,
+  onClear,
 }: SearchHeaderProps) {
   return (
     <>
@@ -84,7 +86,10 @@ export function SearchHeader({
                 exit={{ opacity: 0, scale: 0.5 }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                onClick={() => setInputValue("")}
+                onClick={() => {
+                  setInputValue("");
+                  onClear();
+                }}
                 className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-full hover:bg-slate-500/10 transition-colors cursor-pointer"
                 aria-label="Clear input"
                 disabled={loading}

@@ -8,6 +8,7 @@ import {
   getLangColor,
   type CardTheme,
 } from "../shared";
+import { getRPGStats } from "../../../../lib/gameUtils";
 
 export const dynamic = "force-dynamic";
 
@@ -46,7 +47,8 @@ export async function GET(
 
     const isRpg = request.nextUrl.searchParams.get("rpg") === "true";
     if (isRpg) {
-      return svgResponse(renderGamifiedCard(stats, theme, hideBorder));
+      const rpgClass = request.nextUrl.searchParams.get("rpg_class");
+      return svgResponse(renderGamifiedCard(stats, theme, hideBorder, rpgClass, customTitle));
     }
 
     const cardWidth = 495;
@@ -223,29 +225,30 @@ export async function GET(
 function renderGamifiedCard(
   data: any,
   theme: CardTheme,
-  hideBorder: boolean
+  hideBorder: boolean,
+  rpgClass?: string | null,
+  customTitle?: string | null
 ): string {
-  const displayName = data.user.name || data.user.login;
+  const displayName = escapeXml(
+    customTitle || data.user.name || data.user.login
+  );
   const username = `@${data.user.login}`;
 
   const followers = data.user.followers || 0;
-  const totalStars = data.stats?.totalStars || 0;
-  const totalRepos = data.stats?.totalRepos || data.user.publicRepos || 0;
-  const totalForks = data.stats?.totalForks || 0;
+  const totalStars = data.totalStars || 0;
+  const totalRepos = data.totalRepos || 0;
+  const totalForks = data.totalForks || 0;
+  const totalCommits = data.totalCommits || 0;
 
   const topLang = data.languages && data.languages.length > 0 ? data.languages[0].name : "Unknown";
 
-  const calcLevel = Math.floor((totalStars * 3 + totalRepos * 2 + followers) / 5) || 1;
-  let playerClass = `${topLang} Fairy`;
-  if (topLang === "JavaScript" || topLang === "TypeScript") playerClass = "Code Sorceress";
-  if (topLang === "Python") playerClass = "Data Witch";
-  if (topLang === "Go") playerClass = "Backend Mage";
-  if (topLang === "HTML" || topLang === "CSS") playerClass = "UI Illusionist";
-  if (topLang === "Unknown") playerClass = "Novice Sprite";
+  const rpg = getRPGStats(totalCommits, totalStars, totalRepos, followers, topLang);
+  const calcLevel = rpg.level;
+  const playerClass = escapeXml(rpgClass || rpg.role);
+  const expPercent = rpg.expPercent;
 
   const cardWidth = 490;
   const cardHeight = 190;
-  const expPercent = Math.min((followers / 50) * 100, 100);
 
   return `
 <svg xmlns="http://www.w3.org/2000/svg" width="${cardWidth}" height="${cardHeight}" viewBox="0 0 ${cardWidth} ${cardHeight}">

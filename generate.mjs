@@ -244,12 +244,24 @@ async function fetchStats(username) {
     }))
     .sort((a, b) => b.percentage - a.percentage);
 
+  // Fetch total commits using Search Commits API
+  let totalCommits = 0;
+  try {
+    const searchRes = await githubFetch(
+      `https://api.github.com/search/commits?q=author:${encodeURIComponent(username)}`
+    );
+    totalCommits = searchRes.total_count || 0;
+  } catch (e) {
+    console.warn("Failed to fetch commit count from search API:", e);
+  }
+
   return {
     user,
     totalStars: allRepos.reduce((s, r) => s + r.stargazers_count, 0),
     totalForks: allRepos.reduce((s, r) => s + r.forks_count, 0),
     totalRepos: allRepos.length,
     languages,
+    totalCommits,
   };
 }
 
@@ -258,6 +270,9 @@ async function fetchStats(username) {
    ═══════════════════════════════════════════════════ */
 
 function generateStatsSvg(stats, theme, options) {
+  if (options.layout === "rpg" || options.rpg === true) {
+    return renderGamifiedCard(stats, theme, options.hide_border);
+  }
   const displayName = escapeXml(options.title || stats.user.name || stats.user.login);
   const topLang = stats.languages.length > 0 ? stats.languages[0].name : "N/A";
   const hideTitle = options.hide_title;
@@ -436,6 +451,187 @@ function generateStatsSvg(stats, theme, options) {
 </svg>`;
 }
 
+function calculateLevel(commits, stars, repos, followers) {
+  const points = (commits * 0.3) + (stars * 3) + (repos * 2) + (followers * 1.5);
+  return Math.min(99, Math.max(1, Math.floor(Math.sqrt(points / 15))));
+}
+
+function getPlayerClass(topLang, level) {
+  const normalizedLang = (topLang || "Unknown").trim().toLowerCase();
+
+  if (normalizedLang === "javascript" || normalizedLang === "typescript") {
+    if (level < 5) return "Apprentice";
+    if (level < 15) return "Sorceress";
+    if (level < 30) return "Grandmaster";
+    return "Lord of Script";
+  }
+
+  if (normalizedLang === "python") {
+    if (level < 5) return "Apprentice";
+    if (level < 15) return "Witch";
+    if (level < 30) return "Alchemist";
+    return "Archmage";
+  }
+
+  if (normalizedLang === "go") {
+    if (level < 5) return "Apprentice";
+    if (level < 15) return "Sorceress";
+    if (level < 30) return "Grandmaster";
+    return "Archmage";
+  }
+
+  if (normalizedLang === "html" || normalizedLang === "css") {
+    if (level < 5) return "Sprite";
+    if (level < 15) return "Fairy";
+    if (level < 30) return "Alchemist";
+    return "Archmage";
+  }
+
+  if (normalizedLang === "java" || normalizedLang === "c#") {
+    if (level < 5) return "Apprentice";
+    if (level < 15) return "Sorceress";
+    if (level < 30) return "Grandmaster";
+    return "Archmage";
+  }
+
+  if (normalizedLang === "c" || normalizedLang === "c++" || normalizedLang === "rust") {
+    if (level < 5) return "Apprentice";
+    if (level < 15) return "Sorceress";
+    if (level < 30) return "Grandmaster";
+    return "Lord of Script";
+  }
+
+  // Default / Other languages
+  if (level < 5) return "Sprite";
+  if (level < 15) return "Fairy";
+  if (level < 30) return "Alchemist";
+  return "Archmage";
+}
+
+function renderGamifiedCard(data, theme, hideBorder, rpgClass, customTitle) {
+  const displayName = escapeXml(customTitle || data.user.name || data.user.login);
+  const username = `@${data.user.login}`;
+
+  const followers = data.user.followers || 0;
+  const totalStars = data.totalStars || 0;
+  const totalRepos = data.totalRepos || 0;
+  const totalForks = data.totalForks || 0;
+  const totalCommits = data.totalCommits || 0;
+
+  const topLang = data.languages && data.languages.length > 0 ? data.languages[0].name : "Unknown";
+
+  const calcLevel = calculateLevel(totalCommits, totalStars, totalRepos, followers);
+  const playerClass = rpgClass || getPlayerClass(topLang, calcLevel);
+  const expPercent = Math.min((followers / 50) * 100, 100);
+
+  const cardWidth = 490;
+  const cardHeight = 190;
+
+  return `
+<svg xmlns="http://www.w3.org/2000/svg" width="${cardWidth}" height="${cardHeight}" viewBox="0 0 ${cardWidth} ${cardHeight}">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="${theme.bgGradientStart}"/>
+      <stop offset="100%" stop-color="${theme.bgGradientEnd}"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="${theme.accent}"/>
+      <stop offset="100%" stop-color="${theme.accentSecondary}"/>
+    </linearGradient>
+    <linearGradient id="shimmer" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="${theme.accent}" stop-opacity="0.12"/>
+      <stop offset="50%" stop-color="${theme.accentSecondary}" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="${theme.accent}" stop-opacity="0.02"/>
+    </linearGradient>
+
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="blob-blur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="35"/>
+    </filter>
+
+    <clipPath id="card-clip">
+      <rect width="${cardWidth}" height="${cardHeight}" rx="20"/>
+    </clipPath>
+
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&amp;family=Outfit:wght@600;700;800;900&amp;display=swap');
+      
+      .name-text { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 900; fill: ${theme.title}; letter-spacing: 0.5px; }
+      .user-text { font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600; fill: ${theme.textSoft}; opacity: 0.8; }
+      .lvl-number { font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 900; fill: #ffffff; }
+      .role-badge-text { font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 800; fill: ${theme.accent}; letter-spacing: 1px; }
+      .pill-text { font-family: 'Nunito', sans-serif; font-size: 10px; font-weight: 800; fill: ${theme.textSoft}; }
+      .pill-val { font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 800; fill: ${theme.title}; }
+      .exp-label { font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 900; fill: ${theme.textSoft}; }
+      .footer-text { font-family: 'Outfit', sans-serif; font-size: 9px; font-weight: 700; fill: ${theme.textSoft}; opacity: 0.4; letter-spacing: 2px; }
+    </style>
+  </defs>
+
+  <rect x="10" y="10" width="470" height="170" rx="20" fill="url(#bg)" 
+    ${hideBorder ? "" : `stroke="url(#accent)" stroke-width="1.2" stroke-opacity="0.6"`}/>
+
+  <g transform="translate(10, 10)" clip-path="url(#card-clip)">
+    <circle cx="110" cy="110" r="75" fill="${theme.accentSecondary}" opacity="0.22" filter="url(#blob-blur)"/>
+    <circle cx="370" cy="40" r="95" fill="${theme.accent}" opacity="0.18" filter="url(#blob-blur)"/>
+  </g>
+
+  <rect x="10" y="10" width="470" height="170" rx="20" fill="url(#shimmer)" pointer-events="none"/>
+
+  <g transform="translate(85, 75)">
+    <text x="-40" y="-35" font-size="14" opacity="0.6">✨</text>
+    <text x="35" y="45" font-size="12" opacity="0.5">🌟</text>
+
+    <rect x="-38" y="-38" width="76" height="76" rx="20" fill="${theme.accent}" opacity="0.22"/>
+    
+    <rect x="-32" y="-32" width="64" height="64" rx="16" fill="url(#accent)" filter="url(#glow)"/>
+    <text class="lvl-number" x="0" y="2" text-anchor="middle" dominant-baseline="central">Lv.${calcLevel}</text>
+
+    <rect x="-60" y="44" width="120" height="24" rx="12" fill="url(#bg)" stroke="url(#accent)" stroke-width="1.5"/>
+    <text class="role-badge-text" x="0" y="56" text-anchor="middle" dominant-baseline="central">${playerClass}</text>
+  </g>
+
+  <g transform="translate(195, 45)">
+    
+    <text class="name-text" x="0" y="0">${displayName}</text>
+    <text class="user-text" x="0" y="18">${username}</text>
+
+    <g transform="translate(0, 35)">
+      <rect x="0" y="0" width="82" height="26" rx="8" fill="${theme.accent}" opacity="0.25"/>
+      <text class="pill-text" x="6" y="13" dominant-baseline="central">⭐ Stars</text>
+      <text class="pill-val" x="76" y="13" text-anchor="end" dominant-baseline="central">${totalStars}</text>
+
+      <rect x="88" y="0" width="82" height="26" rx="8" fill="${theme.accentSecondary}" opacity="0.25"/>
+      <text class="pill-text" x="94" y="13" dominant-baseline="central">🔮 Repos</text>
+      <text class="pill-val" x="164" y="13" text-anchor="end" dominant-baseline="central">${totalRepos}</text>
+
+      <rect x="176" y="0" width="84" height="26" rx="8" fill="${theme.accent}" opacity="0.25"/>
+      <text class="pill-text" x="182" y="13" dominant-baseline="central">🔱 Forks</text>
+      <text class="pill-val" x="254" y="13" text-anchor="end" dominant-baseline="central">${totalForks}</text>
+    </g>
+
+    <g transform="translate(0, 85)">
+      <text class="exp-label" x="0" y="0">✨ EXP <tspan font-size="9" opacity="0.6" font-family="Outfit">(Followers)</tspan></text>
+      <text class="pill-val" x="260" y="0" text-anchor="end">${followers}</text>
+      
+      <rect x="0" y="8" width="260" height="10" rx="5" fill="${theme.cardBorder}" opacity="0.28"/>
+      
+      <rect x="0" y="8" width="${(expPercent / 100) * 260}" height="10" rx="5" fill="${theme.title}" fill-opacity="0.85">
+        <animate attributeName="width" from="0" to="${(expPercent / 100) * 260}" dur="1.2s" fill="freeze" calcMode="spline" keySplines="0.2 0.8 0.2 1"/>
+      </rect>
+    </g>
+
+  </g>
+
+  <text class="footer-text" x="460" y="165" text-anchor="end">DEV FAIRY METRICS</text>
+</svg>`;
+}
+
 function generateLangsSvg(stats, theme, options) {
   const layout = options.layout || "donut";
   const hideTitle = options.hide_title;
@@ -455,6 +651,8 @@ function generateLangsSvg(stats, theme, options) {
     return renderDonut(langs, theme, stats.user.login, hideTitle, hideBorder);
   } else if (layout === "compact") {
     return renderCompact(langs, theme, stats.user.login, hideTitle, hideBorder);
+  } else if (layout === "affinity") {
+    return renderAffinity(langs, theme, stats.user.login, hideTitle, hideBorder);
   } else {
     return renderBars(langs, theme, stats.user.login, hideTitle, hideBorder);
   }
@@ -668,6 +866,156 @@ function renderCompact(langs, theme, username, hideTitle, hideBorder) {
     .join("")}
 
   <text x="${cardWidth - 24}" y="${cardHeight - 10}" text-anchor="end" font-family="'Segoe UI',sans-serif" font-size="9" fill="${theme.textSoft}" opacity="0.6">dev fairy metrics ✨</text>
+</svg>`;
+}
+
+function renderAffinity(langs, theme, username, hideTitle, hideBorder) {
+  const cardWidth = 490;
+  const cardHeight = 190;
+  const topLangs = langs.slice(0, 5);
+
+  const r = 36;
+  const circumference = 226.2; // 2 * Math.PI * r
+
+  let currentOffset = 0;
+  const circleSegments = topLangs.map((l) => {
+    const strokeLength = (l.percentage / 100) * circumference;
+    const strokeOffset = -currentOffset;
+    currentOffset += strokeLength;
+    return {
+      name: l.name,
+      percentage: l.percentage,
+      strokeLength,
+      strokeOffset,
+      color: getLangColor(l.name),
+    };
+  });
+
+  return `
+<svg xmlns="http://www.w3.org/2000/svg" width="${cardWidth}" height="${cardHeight}" viewBox="0 0 ${cardWidth} ${cardHeight}">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="${theme.bgGradientStart}"/>
+      <stop offset="100%" stop-color="${theme.bgGradientEnd}"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="${theme.accent}"/>
+      <stop offset="100%" stop-color="${theme.accentSecondary}"/>
+    </linearGradient>
+    <linearGradient id="shimmer" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="${theme.accent}" stop-opacity="0.12"/>
+      <stop offset="50%" stop-color="${theme.accentSecondary}" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="${theme.accent}" stop-opacity="0.02"/>
+    </linearGradient>
+
+    <filter id="glow-sm">
+      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="blob-blur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="35"/>
+    </filter>
+
+    <clipPath id="card-clip">
+      <rect width="${cardWidth}" height="${cardHeight}" rx="20"/>
+    </clipPath>
+
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&amp;family=Outfit:wght@600;700;800;900&amp;display=swap');
+      
+      .title-text { font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 900; fill: ${theme.title}; letter-spacing: 1.5px; }
+      .user-text { font-family: 'Outfit', sans-serif; font-size: 10.5px; font-weight: 600; fill: ${theme.textSoft}; opacity: 0.8; }
+      .lang-label { font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; fill: ${theme.title}; }
+      .lang-pct { font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 800; fill: ${theme.title}; }
+      .footer-text { font-family: 'Outfit', sans-serif; font-size: 9px; font-weight: 700; fill: ${theme.textSoft}; opacity: 0.4; letter-spacing: 2px; }
+    </style>
+  </defs>
+
+  <rect x="10" y="10" width="470" height="170" rx="20" fill="url(#bg)" 
+    ${hideBorder ? "" : `stroke="url(#accent)" stroke-width="1.2" stroke-opacity="0.6"`}/>
+
+  <g transform="translate(10, 10)" clip-path="url(#card-clip)">
+    <circle cx="110" cy="110" r="75" fill="${theme.accentSecondary}" opacity="0.22" filter="url(#blob-blur)"/>
+    <circle cx="370" cy="40" r="95" fill="${theme.accent}" opacity="0.18" filter="url(#blob-blur)"/>
+  </g>
+
+  <rect x="10" y="10" width="470" height="170" rx="20" fill="url(#shimmer)" pointer-events="none"/>
+
+  ${!hideTitle ? `
+  <g transform="translate(30, 32)">
+    <text class="title-text" x="0" y="0">✨ MAGIC AFFINITY</text>
+    <text class="user-text" x="0" y="14">Element mastery of ${username}</text>
+  </g>
+  ` : ""}
+
+  <g transform="translate(85, 112)">
+    <circle cx="0" cy="0" r="46" fill="none" stroke="${theme.title}" stroke-width="1.2" stroke-dasharray="4,5" opacity="0.5" filter="url(#glow-sm)">
+      <animateTransform 
+        attributeName="transform" 
+        type="rotate" 
+        from="0 0 0" 
+        to="360 0 0" 
+        dur="25s" 
+        repeatCount="indefinite" 
+      />
+    </circle>
+    
+    <circle cx="0" cy="0" r="26" fill="none" stroke="${theme.cardBorder}" stroke-width="1.5" opacity="0.3" />
+    <text x="0" y="2" font-size="20" text-anchor="middle" dominant-baseline="central" opacity="0.85">🔮</text>
+
+    <g transform="rotate(-90)">
+      ${circleSegments.map((seg) => `
+      <circle cx="0" cy="0" r="${r}" fill="none" stroke="${seg.color}" stroke-width="7" 
+        stroke-dasharray="${seg.strokeLength} ${circumference}" 
+        stroke-dashoffset="${seg.strokeOffset}" 
+        stroke-linecap="round" opacity="0.95">
+        <animate attributeName="stroke-dashoffset" from="${circumference}" to="${seg.strokeOffset}" dur="1s" fill="freeze" calcMode="spline" keySplines="0.4 0 0.2 1"/>
+      </circle>`).join("")}
+    </g>
+  </g>
+
+  <g transform="translate(200, 55)">
+    ${circleSegments.map((l, i) => {
+    const y = i * 23;
+    const barX = 96;
+    const barW = 105;
+    const fillW = Math.max((l.percentage / 100) * barW, 4);
+    const c = l.color;
+    const d = `${(i * 0.08).toFixed(2)}s`;
+
+    const cleanName = escapeXml(l.name);
+    const displayName = cleanName.length > 11 ? `${cleanName.substring(0, 9)}..` : cleanName;
+
+    return `
+    <g transform="translate(0, ${y})" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" dur="0.4s" begin="${d}" fill="freeze"/>
+      
+      <circle cx="0" cy="0" r="3.5" fill="${c}" opacity="0.95" />
+
+      <text class="lang-label" x="10" y="0" dominant-baseline="central">
+        ${displayName.toUpperCase()}
+      </text>
+
+      <rect x="${barX}" y="-3.5" width="${barW}" height="7" rx="3.5" fill="${theme.cardBorder}" opacity="0.18" />
+      
+      <rect x="${barX}" y="-3.5" width="0" height="7" rx="3.5" fill="${c}">
+        <animate attributeName="width" from="0" to="${fillW}" dur="0.8s" begin="${d}" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+      </rect>
+
+      <circle cx="${barX}" cy="0" r="2" fill="#ffffff" opacity="0">
+        <animate attributeName="cx" from="${barX}" to="${barX + fillW}" dur="0.8s" begin="${d}" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+        <animate attributeName="opacity" from="0" to="0.9" dur="0.8s" begin="${d}" fill="freeze"/>
+      </circle>
+      
+      <text class="lang-pct" x="${barX + barW + 12}" y="0" dominant-baseline="central">${l.percentage}%</text>
+    </g>`;
+  }).join("")}
+  </g>
+
+  <text class="footer-text" x="460" y="165" text-anchor="end">DEV FAIRY METRICS</text>
 </svg>`;
 }
 

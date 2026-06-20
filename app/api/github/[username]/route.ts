@@ -112,6 +112,17 @@ export async function GET(
     const totalStars = allRepos.reduce((sum, r) => sum + r.stargazers_count, 0);
     const totalForks = allRepos.reduce((sum, r) => sum + r.forks_count, 0);
 
+    // Fetch total commits using Search Commits API
+    let totalCommits = 0;
+    try {
+      const searchRes = await githubFetch(
+        `https://api.github.com/search/commits?q=author:${encodeURIComponent(username)}`
+      );
+      totalCommits = searchRes.total_count || 0;
+    } catch (e) {
+      console.warn("Failed to fetch commit count from search API:", e);
+    }
+
     return Response.json({
       user: {
         login: user.login,
@@ -130,6 +141,7 @@ export async function GET(
         totalStars,
         totalForks,
         totalLanguages: languages.length,
+        totalCommits,
       },
       languages,
       topRepos: ownRepos.slice(0, 6).map((r) => ({

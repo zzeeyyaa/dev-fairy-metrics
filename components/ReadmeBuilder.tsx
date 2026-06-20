@@ -1,6 +1,8 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Check, Copy } from "lucide-react";
 import { itemVariants } from "./constants";
+import { getAvailableClassesForLevel, getLevelTierInfo } from "../lib/gameUtils";
 
 interface ReadmeBuilderProps {
   cardType: "stats" | "languages";
@@ -21,6 +23,9 @@ interface ReadmeBuilderProps {
   setWidgetTitle: (title: string) => void;
   widgetLangsCount: number;
   setWidgetLangsCount: (count: number) => void;
+  widgetRpgClass: string;
+  setWidgetRpgClass: (c: string) => void;
+  userLevel: number;
   previewUrl: string;
   markdownCode: string;
   htmlCode: string;
@@ -47,12 +52,17 @@ export function ReadmeBuilder({
   setWidgetTitle,
   widgetLangsCount,
   setWidgetLangsCount,
+  widgetRpgClass,
+  setWidgetRpgClass,
+  userLevel,
   previewUrl,
   markdownCode,
   htmlCode,
   handleCopy,
   copiedFormat,
 }: ReadmeBuilderProps) {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
   const lightThemes = [
     { id: "cotton-candy", name: "Cotton Candy", color: "#e8a0bf" },
     { id: "strawberry", name: "Strawberry", color: "#e88a9a" },
@@ -271,21 +281,118 @@ export function ReadmeBuilder({
                 </div>
               </div>
 
-              <div>
-                <label
-                  className="text-xs font-semibold uppercase tracking-wider block mb-1"
-                  style={{ color: "hsl(var(--fairy-text-soft))" }}
-                >
-                  Custom Title (Optional)
-                </label>
-                <input
-                  type="text"
-                  value={widgetTitle}
-                  onChange={(e) => setWidgetTitle(e.target.value)}
-                  placeholder="e.g. My Magical Stats"
-                  className="w-full text-xs p-2.5 rounded-xl border border-pink-200/50 bg-white/50 focus:outline-none focus:border-pink-400 focus:bg-white/80 transition-all text-slate-700 placeholder-slate-400"
-                />
-              </div>
+              {statsLayout === "rpg" && (
+                <div className="space-y-2">
+                  <div className="relative">
+                    <label
+                      className="text-xs font-semibold uppercase tracking-wider block mb-1.5"
+                      style={{ color: "hsl(var(--fairy-text-soft))" }}
+                    >
+                      Select Role / Class 🔮
+                    </label>
+                    
+                    {/* Custom Dropdown Trigger */}
+                    <button
+                      type="button"
+                      onClick={() => setDropdownOpen(!dropdownOpen)}
+                      className="w-full text-xs p-2.5 rounded-xl border border-pink-200/50 bg-white/50 focus:outline-none focus:border-pink-400 focus:bg-white/80 transition-all text-slate-700 font-semibold flex items-center justify-between cursor-pointer animate-fade-in"
+                    >
+                      <span>{widgetRpgClass ? widgetRpgClass : "✨ Default (Auto-detect)"}</span>
+                      <svg
+                        className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+
+                    {/* Custom Dropdown Menu */}
+                    <AnimatePresence>
+                      {dropdownOpen && (
+                        <>
+                          {/* Close backdrop */}
+                          <div 
+                            className="fixed inset-0 z-40" 
+                            onClick={() => setDropdownOpen(false)}
+                          />
+                          <motion.div
+                            initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                            transition={{ duration: 0.15, ease: "easeOut" }}
+                            className="absolute left-0 right-0 z-50 mt-1.5 rounded-xl border border-pink-100 bg-white/95 backdrop-blur-md shadow-xl max-h-60 overflow-y-auto p-1.5 space-y-0.5"
+                          >
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setWidgetRpgClass("");
+                                setDropdownOpen(false);
+                              }}
+                              className={`w-full text-left text-xs p-2 rounded-lg transition-all flex items-center justify-between cursor-pointer ${
+                                widgetRpgClass === ""
+                                  ? "bg-pink-50 text-pink-700 font-bold"
+                                  : "text-slate-600 hover:bg-pink-50/50 hover:text-slate-800"
+                              }`}
+                            >
+                              <span>✨ Default (Auto-detect)</span>
+                              {widgetRpgClass === "" && <Check className="w-3.5 h-3.5 text-pink-600 shrink-0" />}
+                            </button>
+
+                            {getAvailableClassesForLevel(userLevel).map((cls) => (
+                              <button
+                                key={cls}
+                                type="button"
+                                onClick={() => {
+                                  setWidgetRpgClass(cls);
+                                  setDropdownOpen(false);
+                                }}
+                                className={`w-full text-left text-xs p-2 rounded-lg transition-all flex items-center justify-between cursor-pointer ${
+                                  widgetRpgClass === cls
+                                    ? "bg-pink-50 text-pink-700 font-bold"
+                                    : "text-slate-600 hover:bg-pink-50/50 hover:text-slate-800"
+                                }`}
+                              >
+                                <span>{cls}</span>
+                                {widgetRpgClass === cls && <Check className="w-3.5 h-3.5 text-pink-600 shrink-0" />}
+                              </button>
+                            ))}
+                          </motion.div>
+                        </>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                  
+                  {/* Tier Description */}
+                  <div className="p-3 rounded-xl bg-pink-50/50 border border-pink-100/50 text-[11px] leading-relaxed text-pink-700/80 animate-fade-in">
+                    <div className="font-bold flex justify-between">
+                      <span>{getLevelTierInfo(userLevel).tier}</span>
+                      <span className="font-mono">{getLevelTierInfo(userLevel).range}</span>
+                    </div>
+                    <div className="mt-0.5 font-medium">{getLevelTierInfo(userLevel).description}</div>
+                  </div>
+                </div>
+              )}
+
+              {statsLayout === "classic" && (
+                <div>
+                  <label
+                    className="text-xs font-semibold uppercase tracking-wider block mb-1"
+                    style={{ color: "hsl(var(--fairy-text-soft))" }}
+                  >
+                    Custom Title (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={widgetTitle}
+                    onChange={(e) => setWidgetTitle(e.target.value)}
+                    placeholder="e.g. My Magical Stats"
+                    className="w-full text-xs p-2.5 rounded-xl border border-pink-200/50 bg-white/50 focus:outline-none focus:border-pink-400 focus:bg-white/80 transition-all text-slate-700 placeholder-slate-400"
+                  />
+                </div>
+              )}
             </div>
           )}
 

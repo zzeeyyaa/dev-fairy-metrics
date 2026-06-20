@@ -224,6 +224,7 @@ export interface FetchedStats {
   totalForks: number;
   totalRepos: number;
   languages: { name: string; percentage: number }[];
+  totalCommits: number;
 }
 
 export async function fetchGitHubStats(username: string): Promise<FetchedStats> {
@@ -268,12 +269,24 @@ export async function fetchGitHubStats(username: string): Promise<FetchedStats> 
     }))
     .sort((a, b) => b.percentage - a.percentage);
 
+  // Fetch total commits using Search Commits API
+  let totalCommits = 0;
+  try {
+    const searchRes = await githubFetch(
+      `https://api.github.com/search/commits?q=author:${encodeURIComponent(username)}`
+    );
+    totalCommits = searchRes.total_count || 0;
+  } catch (e) {
+    console.warn("Failed to fetch commit count from search API:", e);
+  }
+
   return {
     user,
     totalStars: allRepos.reduce((s, r) => s + r.stargazers_count, 0),
     totalForks: allRepos.reduce((s, r) => s + r.forks_count, 0),
     totalRepos: allRepos.length,
     languages,
+    totalCommits,
   };
 }
 

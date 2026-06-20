@@ -3,6 +3,7 @@ import { ExternalLink, MapPin, Calendar, Users, UserPlus } from "lucide-react";
 import { GitHubData } from "./types";
 import { itemVariants, jellySpring } from "./constants";
 import { useMemo } from "react";
+import { getRPGStats } from "../lib/gameUtils";
 
 export function ProfileCard({ data }: { data: GitHubData }) {
   const accountAge = useMemo(() => {
@@ -20,22 +21,16 @@ export function ProfileCard({ data }: { data: GitHubData }) {
 
     const followers = data.user.followers || 0;
     const totalStars = data.stats?.totalStars || 0;
-    const totalRepos = data.stats?.totalRepos || data.user.publicRepos || 0;
+    const totalRepos = data.stats?.totalRepos || 0;
+    const totalCommits = data.stats?.totalCommits || 0;
     const topLang = data.languages?.length > 0 ? data.languages[0].name : "Unknown";
 
-    const level = Math.floor((totalStars * 3 + totalRepos * 2 + followers) / 5) || 1;
-
-    let role = `${topLang} Fairy`;
-    if (topLang === "JavaScript" || topLang === "TypeScript") role = "Code Sorceress";
-    if (topLang === "Python") role = "Data Witch";
-    if (topLang === "Go") role = "Backend Mage";
-    if (topLang === "HTML" || topLang === "CSS") role = "UI Illusionist";
-    if (topLang === "Unknown") role = "Novice Sprite";
+    const rpg = getRPGStats(totalCommits, totalStars, totalRepos, followers, topLang);
 
     return {
-      level,
-      role,
-      exp: { value: followers, percent: Math.min((followers / 50) * 100, 100) },
+      level: rpg.level,
+      role: rpg.role,
+      exp: { value: followers, percent: rpg.expPercent },
     };
   }, [data]);
 
