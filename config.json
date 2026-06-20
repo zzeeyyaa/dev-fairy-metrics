@@ -1,0 +1,15 @@
+{
+  "username": "zzeeyyaa",
+  "theme": "dark-fairy",
+  "stats": {
+    "title": "",
+    "hide_title": false,
+    "hide_border": false
+  },
+  "languages": {
+    "layout": "donut",
+    "langs_count": 8,
+    "hide_title": false,
+    "hide_border": false
+  }
+}
