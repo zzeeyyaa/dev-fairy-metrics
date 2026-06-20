@@ -125,12 +125,10 @@
 
 body {
   font-family: var(--font-inter);
-  background: linear-gradient(
-    135deg,
-    hsl(var(--fairy-bg-start)) 0%,
-    hsl(var(--fairy-bg-mid)) 50%,
-    hsl(var(--fairy-bg-end)) 100%
-  );
+  background: linear-gradient(135deg,
+      hsl(var(--fairy-bg-start)) 0%,
+      hsl(var(--fairy-bg-mid)) 50%,
+      hsl(var(--fairy-bg-end)) 100%);
   background-size: 400% 400%;
   animation: gradientShift 15s ease infinite;
   color: hsl(var(--fairy-text));
@@ -141,10 +139,23 @@ body {
 
 /* ── Gradient Background Animation ── */
 @keyframes gradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  25% { background-position: 100% 0%; }
-  50% { background-position: 100% 100%; }
-  75% { background-position: 0% 100%; }
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  25% {
+    background-position: 100% 0%;
+  }
+
+  50% {
+    background-position: 100% 100%;
+  }
+
+  75% {
+    background-position: 0% 100%;
+  }
 }
 
 /* ── Glass Card ── */
@@ -159,7 +170,7 @@ body {
     0 2px 8px hsla(var(--fairy-shadow), 0.1),
     inset 0 1px 0 var(--fairy-inner-glow);
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 0.3s ease;
+    box-shadow 0.3s ease;
 }
 
 .glass-card:hover {
@@ -189,74 +200,177 @@ body {
 
 /* ── Jelly Bounce Animations ── */
 @keyframes jellyBounce {
-  0% { transform: scale(0.3) rotate(-5deg); opacity: 0; }
-  40% { transform: scale(1.08) rotate(1deg); }
-  60% { transform: scale(0.96) rotate(-1deg); }
-  80% { transform: scale(1.02); }
-  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  0% {
+    transform: scale(0.3) rotate(-5deg);
+    opacity: 0;
+  }
+
+  40% {
+    transform: scale(1.08) rotate(1deg);
+  }
+
+  60% {
+    transform: scale(0.96) rotate(-1deg);
+  }
+
+  80% {
+    transform: scale(1.02);
+  }
+
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
 }
 
 @keyframes jellyPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.04); }
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.04);
+  }
 }
 
 @keyframes jellyWobble {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(2deg); }
-  75% { transform: rotate(-2deg); }
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(2deg);
+  }
+
+  75% {
+    transform: rotate(-2deg);
+  }
 }
 
 @keyframes bounceIn {
-  0% { transform: translateY(30px) scale(0.9); opacity: 0; }
-  60% { transform: translateY(-8px) scale(1.02); }
-  100% { transform: translateY(0) scale(1); opacity: 1; }
+  0% {
+    transform: translateY(30px) scale(0.9);
+    opacity: 0;
+  }
+
+  60% {
+    transform: translateY(-8px) scale(1.02);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 
 @keyframes slideUpFade {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  33% { transform: translateY(-12px) rotate(2deg); }
-  66% { transform: translateY(-6px) rotate(-1deg); }
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  33% {
+    transform: translateY(-12px) rotate(2deg);
+  }
+
+  66% {
+    transform: translateY(-6px) rotate(-1deg);
+  }
 }
 
 @keyframes sparkle {
-  0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
-  50% { opacity: 1; transform: scale(1) rotate(180deg); }
+
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(180deg);
+  }
 }
 
 @keyframes blobMorph {
-  0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-  25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
-  50% { border-radius: 50% 60% 30% 60% / 30% 40% 70% 60%; }
-  75% { border-radius: 60% 30% 60% 40% / 70% 50% 40% 60%; }
+
+  0%,
+  100% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+
+  25% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+  }
+
+  50% {
+    border-radius: 50% 60% 30% 60% / 30% 40% 70% 60%;
+  }
+
+  75% {
+    border-radius: 60% 30% 60% 40% / 70% 50% 40% 60%;
+  }
 }
 
 @keyframes donutSpin {
-  from { transform: rotate(-90deg); }
-  to { transform: rotate(-90deg); }
+  from {
+    transform: rotate(-90deg);
+  }
+
+  to {
+    transform: rotate(-90deg);
+  }
 }
 
 @keyframes segmentGrow {
-  from { stroke-dasharray: 0, 100; }
+  from {
+    stroke-dasharray: 0, 100;
+  }
 }
 
 @keyframes barGrow {
-  from { width: 0; }
+  from {
+    width: 0;
+  }
 }
 
 @keyframes countUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 /* ── Animation Utility Classes ── */
@@ -285,15 +399,41 @@ body {
 }
 
 /* ── Stagger Delays ── */
-.delay-0 { animation-delay: 0ms; }
-.delay-1 { animation-delay: 80ms; }
-.delay-2 { animation-delay: 160ms; }
-.delay-3 { animation-delay: 240ms; }
-.delay-4 { animation-delay: 320ms; }
-.delay-5 { animation-delay: 400ms; }
-.delay-6 { animation-delay: 480ms; }
-.delay-7 { animation-delay: 560ms; }
-.delay-8 { animation-delay: 640ms; }
+.delay-0 {
+  animation-delay: 0ms;
+}
+
+.delay-1 {
+  animation-delay: 80ms;
+}
+
+.delay-2 {
+  animation-delay: 160ms;
+}
+
+.delay-3 {
+  animation-delay: 240ms;
+}
+
+.delay-4 {
+  animation-delay: 320ms;
+}
+
+.delay-5 {
+  animation-delay: 400ms;
+}
+
+.delay-6 {
+  animation-delay: 480ms;
+}
+
+.delay-7 {
+  animation-delay: 560ms;
+}
+
+.delay-8 {
+  animation-delay: 640ms;
+}
 
 /* ── Background Blobs ── */
 .blob {
@@ -390,12 +530,10 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    hsla(0, 0%, 100%, 0.3),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      hsla(0, 0%, 100%, 0.3),
+      transparent);
   background-size: 200% 100%;
   animation: shimmer 2.5s ease-in-out infinite;
 }
@@ -407,7 +545,10 @@ body {
   -webkit-backdrop-filter: blur(16px);
   border: 2px solid hsla(var(--fairy-border), 0.5);
   border-radius: var(--fairy-radius-pill);
-  padding: 14px 24px;
+
+  /* UBAH BARIS INI: Atas 14px, Kanan 24px, Bawah 14px, Kiri 48px */
+  padding: 14px 24px 14px 48px;
+
   font-family: var(--font-inter);
   font-size: 1rem;
   color: hsl(var(--fairy-text));
@@ -430,11 +571,9 @@ body {
 
 /* ── Fairy Button ── */
 .fairy-btn {
-  background: linear-gradient(
-    135deg,
-    hsl(var(--fairy-primary)),
-    hsl(var(--fairy-secondary))
-  );
+  background: linear-gradient(135deg,
+      hsl(var(--fairy-primary)),
+      hsl(var(--fairy-secondary)));
   color: white;
   border: none;
   border-radius: var(--fairy-radius-pill);
@@ -454,11 +593,9 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    hsla(0, 0%, 100%, 0.2),
-    transparent
-  );
+  background: linear-gradient(135deg,
+      hsla(0, 0%, 100%, 0.2),
+      transparent);
   border-radius: inherit;
 }
 
@@ -501,12 +638,10 @@ body {
 
 /* ── Loading Skeleton ── */
 .skeleton {
-  background: linear-gradient(
-    90deg,
-    hsla(var(--fairy-border), 0.3) 25%,
-    hsla(var(--fairy-border), 0.5) 50%,
-    hsla(var(--fairy-border), 0.3) 75%
-  );
+  background: linear-gradient(90deg,
+      hsla(var(--fairy-border), 0.3) 25%,
+      hsla(var(--fairy-border), 0.5) 50%,
+      hsla(var(--fairy-border), 0.3) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.8s ease-in-out infinite;
   border-radius: var(--fairy-radius);
@@ -517,11 +652,9 @@ body {
   font-family: var(--font-outfit);
   font-weight: 700;
   font-size: 2rem;
-  background: linear-gradient(
-    135deg,
-    hsl(var(--fairy-primary)),
-    hsl(var(--fairy-secondary))
-  );
+  background: linear-gradient(135deg,
+      hsl(var(--fairy-primary)),
+      hsl(var(--fairy-secondary)));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -539,12 +672,10 @@ body {
 .fairy-heading {
   font-family: var(--font-outfit);
   font-weight: 700;
-  background: linear-gradient(
-    135deg,
-    hsl(var(--fairy-primary)),
-    hsl(var(--fairy-secondary)),
-    hsl(var(--fairy-accent))
-  );
+  background: linear-gradient(135deg,
+      hsl(var(--fairy-primary)),
+      hsl(var(--fairy-secondary)),
+      hsl(var(--fairy-accent)));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -574,9 +705,21 @@ body {
     filter: blur(60px);
     opacity: 0.25;
   }
-  .blob-1 { width: 250px; height: 250px; }
-  .blob-2 { width: 200px; height: 200px; }
-  .blob-3 { width: 180px; height: 180px; }
+
+  .blob-1 {
+    width: 250px;
+    height: 250px;
+  }
+
+  .blob-2 {
+    width: 200px;
+    height: 200px;
+  }
+
+  .blob-3 {
+    width: 180px;
+    height: 180px;
+  }
 
   .glass-card {
     border-radius: 20px;
@@ -589,7 +732,8 @@ body {
 
 @media (max-width: 480px) {
   .fairy-input {
-    padding: 12px 18px;
+    /* UBAH BARIS INI: Atas 12px, Kanan 18px, Bawah 12px, Kiri 44px */
+    padding: 12px 18px 12px 44px;
     font-size: 0.9rem;
   }
 

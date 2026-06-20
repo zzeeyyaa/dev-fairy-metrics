@@ -70,7 +70,7 @@ export function SearchHeader({
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="enter github username..."
-            className="fairy-input pl-12"
+            className="fairy-input pl-12 pr-4"
             id="username-input"
             aria-label="GitHub username"
             disabled={loading}
