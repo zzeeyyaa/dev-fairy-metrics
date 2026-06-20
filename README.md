@@ -56,8 +56,8 @@ Here are examples of the cards generated using the **Dark Fairy** theme:
 
 ## Technical Stack
 
-- **Core**: Next.js 15 (App Router), React 19, TypeScript
-- **Styling**: Tailwind CSS & custom Vanilla CSS HSL variables
+- **Core**: Next.js 16 (App Router), React 19, TypeScript
+- **Styling**: Tailwind CSS 4 & custom Vanilla CSS HSL variables
 - **Animation**: Framer Motion
 - **Components**: Radix UI (Tooltip primitives), Lucide Icons
 - **SVG Generation**: Node.js filesystem and XML builder
